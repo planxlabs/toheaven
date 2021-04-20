@@ -1,3 +1,5 @@
+# original: https://github.com/respeaker/pixel_ring/blob/master/pixel_ring/usb_pixel_ring_v2.py
+
 import usb.core
 import usb.util
 
