@@ -6,9 +6,9 @@ import usb.util
 VID = 0x2886
 PID = 0x0018
 
-class FoundNotAudio(Exception): pass
+class FoundNotDevice(Exception): pass
 
-hex2rgb = lambda n: ((n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF)
+hex2rgb = lambda n: ((n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF) 
 rgb2invert = lambda r, g, b: (~r & 0xFF, ~g & 0xFF, ~b & 0xFF)
 
 class AudioPixelRing:
@@ -16,7 +16,7 @@ class AudioPixelRing:
     def __init__(self, brightness=10):
         self.dev = usb.core.find(idVendor=VID, idProduct=PID)
         if not self.dev:
-            raise FoundNotAudio
+            raise FoundNotDevice
         self.brightness(brightness)
 
     def __del__(self):
@@ -37,34 +37,30 @@ class AudioPixelRing:
         r1, g1, b1, r2, g2, b2 = *(hex2rgb(a) if (not type(a) is tuple) else a), *(hex2rgb(b) if (not type(b) is tuple) else b) 
         self.__write(0x21, [r1, g1, b1, 0, r2, g2, b2, 0])
 
+    def __pattern(self, cmd, *palette):
+        self.__write(cmd)
+        if palette:
+            self.__palette(*palette)
+
     def normal(self, *color):
         r, g, b = hex2rgb(*color) if len(color) == 1 else color 
         self.__write(1, [r, g, b, 0])
-
+                
     def off(self):
         self.normal(0x000000)
     
     def listen(self, *palette):
-        self.__write(0)
-        if palette:
-            self.__palette(*palette)
+        self.__pattern(0, *palette)
 
     def aurora(self, *palette):
-        self.__write(3)
-        if palette:
-            self.__palette(*palette)
+        self.__pattern(3, *palette)
 
     def think(self, *palette):
-        self.__write(4)
-        if palette:
-            self.__palette(*palette)
+        self.__pattern(4, *palette)
 
     def spin(self, *color):
-        self.__write(5)
-        if color:
-            color = (color[0], ~color[0]) if len(color) == 1 else (color, rgb2invert(*color))
-            self.__palette(*color)
-
+        self.__pattern(5, None if not color else *(color[0], ~color[0]) if len(color) == 1 else (color, rgb2invert(*color)))
+        
     def brightness(self, val):
         self.__write(0x20, [val])
 ```
