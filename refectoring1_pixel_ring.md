@@ -1,5 +1,5 @@
-# original: https://github.com/respeaker/pixel_ring/blob/master/pixel_ring/usb_pixel_ring_v2.py
-
+> original: https://github.com/respeaker/pixel_ring/blob/master/pixel_ring/usb_pixel_ring_v2.py
+```python
 import usb.core
 import usb.util
 
@@ -67,3 +67,4 @@ class AudioPixelRing:
 
     def brightness(self, val):
         self.__write(0x20, [val])
+```
