@@ -1,0 +1,2 @@
+- [AlexNet](https://drive.google.com/file/d/1jllQSGUT5093XvzTq-ualoGrZmC1lPys/view?usp=sharing)<br>
+- [SSD MobileNet V2 CoCoEngine](https://drive.google.com/file/d/1Y76hPYgDdAm7F88a_HYv6kpS8Ysolgmt/view)<br>
