@@ -29,7 +29,7 @@ class OmniWheel:
 # PyQt5 (second_omniwheel.py)
 ```python
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow #QWidget
 from PyQt5.QtWidgets import QPushButton, QCheckBox, QLabel, QLineEdit, QGroupBox
 from PyQt5.QtWidgets import QMessageBox
 
@@ -38,15 +38,10 @@ from PyQt5.QtCore import QCoreApplication
 
 from pop.CAN import OmniWheel
 
-class MainWindow(QWidget):
+class MainWindow(QMainWindow): #(QWidget):
     def __init__(self):
         super().__init__()
         self.omni = OmniWheel()
-
-        #self.showFullScreen()
-        self.move(0,0)
-        self.resize(1280, 720)
-        self.setWindowTitle("OmniWheel Control")
         self.init()
 
     def init(self):
@@ -56,6 +51,7 @@ class MainWindow(QWidget):
 
         self.cbForward = QCheckBox(' Forward', self)
         self.cbForward.move(100, 80)
+        self.cbForward.resize(220, 80)
         self.cbForward.setFont(QFont('Arial', 80))
         self.setStyleSheet("QCheckBox::indicator {width: 50px; height: 50px;}")
 
@@ -65,7 +61,7 @@ class MainWindow(QWidget):
             motorLabel = QLabel("Motor%d"%(i + 1), self)
             motorLabel.move(100, 200 + (i * step))
             motorLabel.setFont(QFont('Arial', 90))
-
+            motorLabel.resize(220, 80)
             self.motorEdit.append(QLineEdit(self))
             self.motorEdit[i].move(100 + 180, 200 + (i * step))
             self.motorEdit[i].resize(900, 70)
@@ -120,6 +116,6 @@ class MainWindow(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
-    mainWindow.show()
+    mainWindow.showFullScreen()
     sys.exit(app.exec_())
 ```
