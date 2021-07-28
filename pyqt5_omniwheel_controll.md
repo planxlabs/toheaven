@@ -1,15 +1,48 @@
+# Bug Fix(app exit issus) of OmniWheel (pop > CAN.py > class OmniWheel) 
+```python
+class OmniWheel:
+    def __init__(self):
+        #super().__init__()
+        ...
+        self._is_read = False
+    
+    def __del__(self):
+        #super().__del__()
+        ...
+        
+    def _readSensor(self):
+        #while True:
+        while self._is_read:
+            ...
+    
+    def readStart(self):
+        if not hasattr(__main__, ...
+            self._is_read = True
+            ...
+    
+    def readStop(self):
+        if hasattr(self, 'thread'):
+            self._is_read = False
+            ...
+```
+
 # PyQt5 (second_omniwheel.py)
 ```python
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QPushButton, QCheckBox, QLabel, QLineEdit, QGroupBox
+from PyQt5.QtWidgets import QMessageBox
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QCoreApplication
 
+from pop.CAN import OmniWheel
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.omni = OmniWheel()
+
         #self.showFullScreen()
         self.move(0,0)
         self.resize(1280, 720)
@@ -42,26 +75,43 @@ class MainWindow(QWidget):
         gb2.move(80, 460)
         gb2.resize(1120, 130)
 
+        self.pbControl = [QPushButton('Start', self), QPushButton('Stop', self), QPushButton('Exit', self)]
         onClickedHandler = [self.OnClieckedStart, self.onClickedStop, self.onClickedExit]
-        pbTitle = ['Start', 'Stop', 'Exit']
 
-        for i in range(len(pbTitle)):
-            pb = QPushButton(pbTitle[i], self)
+        for i, pb in enumerate(self.pbControl):
             pb.move(210 + i * 320, 480)
             pb.resize(200, 100)
             pb.clicked.connect(onClickedHandler[i])
             pb.setFont(QFont('Arial', 50))
 
+        self.pbControl[1].setEnabled(False)
 
     def OnClieckedStart(self):
-        if self.cbForward.isChecked(): 
-            print("forward")
+        wheel = []
+        for e in self.motorEdit:
+            try:
+                wheel.append(int(e.text()))
+            except ValueError:
+                msg = QMessageBox(3, "Error", "Motor PWM Value Error", QMessageBox.Ok)
+                msg.setFont(QFont('Arial',50))
+                msg.exec()
+                return
+
+        if self.cbForward.isChecked():
+            self.omni.forward(wheel) 
         else:
-            print("backward")
-    
+            self.omni.backward(wheel)
+        
+        self.pbControl[0].setEnabled(False)
+        self.pbControl[1].setEnabled(True)
+        
+                        
     def onClickedStop(self):
-        print("stop")
+        self.omni.stop()
     
+        self.pbControl[0].setEnabled(True)
+        self.pbControl[1].setEnabled(False)
+
     def onClickedExit(self):
         print("exit")
         QCoreApplication.instance().quit()
