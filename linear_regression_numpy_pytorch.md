@@ -11,8 +11,8 @@ b = 0
 
 n_data = len(x_data)
 
-epochs = 1000
-learning_rate = 0.01
+epochs = 8000  #1000
+learning_rate = 0.01  #0.1
 
 start = time.time()
 
@@ -25,10 +25,9 @@ for i in range(epochs):
     W -= learning_rate * gradient_w
     b -= learning_rate * gradient_b
 
-    f = 'Epoch ({:10d}/{:10d}) cost: {:10f}, W: {:10f}, b: {:10}'.format(
-            i, epochs, cost, W, b)
     if i % 100 == 0:
-        print(f)
+        print('Epoch ({:10d}/{:10d}) cost: {:10f}, W: {:10f}, b: {:10}'.format(
+            i, epochs, cost, W, b))
 
 print('W: {:10}'.format(W))
 print('b: {:10}'.format(b))
@@ -53,7 +52,7 @@ b = torch.zeros(1, requires_grad=True)
 
 optimizer = optim.SGD([W, b], lr=0.01)
 
-epochs = 1000
+epochs = 8000
 
 for i in range(epochs):
     hypothesis = x_data * W + b
@@ -63,10 +62,9 @@ for i in range(epochs):
     cost.backward()
     optimizer.step()
 
-    f = 'Epoch ({:10d}/{:10d}) cost: {:10f}, W: {:10f}, b: {:10}'.format(
-            i, epochs, cost.item(), W.item(), b.item())
     if i % 100 == 0:
-        print(f)
+        print('Epoch ({:10d}/{:10d}) cost: {:10f}, W: {:10f}, b: {:10}'.format(
+            i, epochs, cost.item(), W.item(), b.item()))
 
 print('W: {:10}'.format(W.item()))
 print('b: {:10}'.format(b.item()))
