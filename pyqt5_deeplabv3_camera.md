@@ -16,7 +16,8 @@ class MainWindow(QMainWindow):
 
         self.model = torch.hub.load('pytorch/vision:v0.10.0', 'deeplabv3_resnet101', pretrained=True)
         self.model.eval()
-
+        self.model.to('cuda')
+        
         self.frame = QLabel(self)
         self.frame.resize(1280, 720)
         
@@ -33,10 +34,9 @@ class MainWindow(QMainWindow):
 
         input_tensor = preprocess(input_image)
         input_batch = input_tensor.unsqueeze(0) #create a mini-batch as expected by the model
-
+        
         input_batch = input_batch.to('cuda')
-        self.model.to('cuda')
-
+        
         with torch.no_grad():
             output = self.model(input_batch)['out'][0]
         output_predictions = output.argmax(0)
@@ -82,6 +82,7 @@ class MainWindow(QMainWindow):
 
         self.model = torch.hub.load('pytorch/vision:v0.10.0', 'deeplabv3_resnet101', pretrained=True)
         self.model.eval()
+        self.model.to('cuda')
 
         cam_cmd = lambda cam_with=320, cam_height=240, win_with=320, win_height=240, rate=30, flip=0 : ('nvarguscamerasrc ! '
             'video/x-raw(memory:NVMM), '
@@ -116,34 +117,31 @@ class MainWindow(QMainWindow):
     def __OnDeepLabV3(self):
         from torchvision import transforms
 
-        while self.__is_run:
-            ret, frame = self.cam.read()
-            input_image = Image.fromarray(frame)
-            preprocess = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            ])
+        preprocess = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+            
+        palette = torch.tensor([2 ** 25 - 1, 2 ** 15 - 1, 2 ** 21 - 1])
+        colors = torch.as_tensor([i for i in range(21)])[:, None] * palette
+        colors = (colors % 255).numpy().astype("uint8")
 
+        while self.__is_run:
+            _, frame = self.cam.read()
+            input_image = Image.fromarray(frame)
             input_tensor = preprocess(input_image)
-            input_batch = input_tensor.unsqueeze(0) #create a mini-batch as expected by the model
+            input_batch = input_tensor.unsqueeze(0) 
 
             input_batch = input_batch.to('cuda')
-            self.model.to('cuda')
 
             with torch.no_grad():
                 output = self.model(input_batch)['out'][0]
             output_predictions = output.argmax(0)
 
-            palette = torch.tensor([2 ** 25 - 1, 2 ** 15 - 1, 2 ** 21 - 1])
-            colors = torch.as_tensor([i for i in range(21)])[:, None] * palette
-            colors = (colors % 255).numpy().astype("uint8")
-
             r = Image.fromarray(output_predictions.byte().cpu().numpy()).resize(input_image.size)
             r.putpalette(colors)
 
-            r = ImageQt(r)
-
-            pixmap = QPixmap.fromImage(r)
+            pixmap = QPixmap.fromImage(ImageQt(r))
             self.frame.setPixmap(pixmap)
 
 if __name__ == '__main__':
