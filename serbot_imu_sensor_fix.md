@@ -28,10 +28,9 @@ class axis6:
         else:
             del self
         
-        self.bus.write_byte_data(self.address, self.SMPLRT_DIV, 7)
         self.bus.write_byte_data(self.address, self.PW_MGMT_1, 1) 
         self.bus.write_byte_data(self.address, self.CONFIG, 0)
-        self.bus.write_byte_data(self.address, self.GYRO_CONFIG, 24) #Unit -9.8g ~ 9.8g
+        self.bus.write_byte_data(self.address, self.GYRO_CONFIG, 24) 
     
     def __del__(self):
         self.bus.close()
@@ -102,14 +101,7 @@ def onReadIMU():
     while is_imu_thread:
         gyro[0].value, gyro[1].value, gyro[2].value = imu.getGyro().values()
         accel[0].value, accel[1].value, accel[2].value = imu.getAccel().values()
-        if gyro[0].value < -9.8 or gyro[0].value > 9.8: print("gyro_x", x)
-        if gyro[1].value < -9.8 or gyro[1].value > 9.8: print("gyro_y", y)
-        if gyro[2].value < -9.8 or gyro[2].value > 9.8: print("gyro_z", z)
 
-        if accel[0].value < -9.8 or accel[0].value > 9.8: print("accel_x", x)
-        if accel[1].value < -9.8 or accel[1].value > 9.8: print("accel_y", y)
-        if accel[2].value < -9.8 or accel[2].value > 9.8: print("accel_z", z)
-        
         time.sleep(delay.value/1000)
 
 Thread(target=onReadIMU).start()
