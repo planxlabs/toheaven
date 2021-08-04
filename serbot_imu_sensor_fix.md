@@ -78,3 +78,43 @@ class axis6:
 
 IMU = axis6
 ```
+
+## UnitTest (JupyterLab)
+---
+```python
+delay = widgets.IntSlider(max=10000, description='delay')
+gyro = [widgets.FloatSlider(min=-9.8, max=9.8, description='gyro_'+s) for s in ('x', 'y', 'z')]
+accel = [widgets.FloatSlider(min=-9.8, max=9.8, step=0.01, description='accel_'+s) for s in ('x', 'y', 'z')]
+display(delay)
+for i in range(3):
+    display(gyro[i])
+for i in range(3):   
+    display(accel[i])
+```
+---
+```python
+is_imu_thread = True
+
+from pop.Pilot import IMU
+imu = IMU()
+
+def onReadIMU():
+    while is_imu_thread:
+        gyro[0].value, gyro[1].value, gyro[2].value = imu.getGyro().values()
+        accel[0].value, accel[1].value, accel[2].value = imu.getAccel().values()
+        if gyro[0].value < -9.8 or gyro[0].value > 9.8: print("gyro_x", x)
+        if gyro[1].value < -9.8 or gyro[1].value > 9.8: print("gyro_y", y)
+        if gyro[2].value < -9.8 or gyro[2].value > 9.8: print("gyro_z", z)
+
+        if accel[0].value < -9.8 or accel[0].value > 9.8: print("accel_x", x)
+        if accel[1].value < -9.8 or accel[1].value > 9.8: print("accel_y", y)
+        if accel[2].value < -9.8 or accel[2].value > 9.8: print("accel_z", z)
+        
+        time.sleep(delay.value/1000)
+
+Thread(target=onReadIMU).start()
+```
+---
+```python
+is_imu_thread = False
+```
