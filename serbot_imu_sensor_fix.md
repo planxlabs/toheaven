@@ -81,6 +81,12 @@ IMU = axis6
 ## UnitTest (JupyterLab)
 ---
 ```python
+import time
+import ipywidgets as widgets
+from threading import Thread
+```
+---
+```python
 delay = widgets.IntSlider(max=10000, description='delay')
 gyro = [widgets.FloatSlider(min=-9.8, max=9.8, description='gyro_'+s) for s in ('x', 'y', 'z')]
 accel = [widgets.FloatSlider(min=-9.8, max=9.8, step=0.01, description='accel_'+s) for s in ('x', 'y', 'z')]
