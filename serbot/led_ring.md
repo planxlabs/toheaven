@@ -1,4 +1,4 @@
-> original: https://github.com/respeaker/pixel_ring/blob/master/pixel_ring/usb_pixel_ring_v2.py
+# Library (PixelRing.py)
 ```python
 import usb.core
 import usb.util
@@ -11,7 +11,7 @@ class FoundNotDevice(Exception): pass
 hex2rgb = lambda n: ((n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF) 
 rgb2invert = lambda r, g, b: (~r & 0xFF, ~g & 0xFF, ~b & 0xFF)
 
-class AudioPixelRing:
+class PixelRing:
 
     def __init__(self, brightness=10):
         self.dev = usb.core.find(idVendor=VID, idProduct=PID)
@@ -63,4 +63,17 @@ class AudioPixelRing:
         
     def brightness(self, val):
         self.__write(0x20, [val])
+```
+# Test
+```python
+from AudioPixelRing import PixelRing
+import time
+
+pr = PixelRing()
+
+pr.aurora((255,0,0,0),(0,0,255))
+time.sleep(5)
+pr.normal(128,128,0)
+time.sleep(5)
+pr.off()
 ```
