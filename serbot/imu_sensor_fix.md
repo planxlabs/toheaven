@@ -1,5 +1,5 @@
 # IMU (MPU6050) Sensor Fix (for Serbot)
-> Pilot.py > class axis6 
+> {pop_lib_path}/Pilot.py > class axis6 
 ## Modify
 ```python
 class axis6: 
