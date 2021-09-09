@@ -1,4 +1,4 @@
-# IMU (MPU6050) Sensor Fix (for Serbot)
+# Fix Pop Library (IMU (MPU6050) Sensor)
 > {pop_lib_path}/Pilot.py > class axis6 
 ## Modify
 ```python
