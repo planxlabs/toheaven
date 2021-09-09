@@ -1,4 +1,5 @@
 # Library (PixelRing.py)
+> Controlling the ring pixels around the servo's quadruple microphone
 ```python
 import usb.core
 import usb.util
