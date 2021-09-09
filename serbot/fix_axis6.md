@@ -1,5 +1,6 @@
-# Fix Pop Library (IMU (MPU6050) Sensor)
-> {pop_lib_path}/Pilot.py > class axis6 
+# Fix Pop Library (MPU6050 Sensor)
+> {python3_lib_path}/pop/Pilot.py > class axis6 
+
 ## Modify
 ```python
 class axis6: 
